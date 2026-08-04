@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O.R.I.O.N. — Operational Response & Intelligence Observation Network</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #0F172A;
+            --color-secondary: #1E293B;
+            --color-accent: #22C55E;
+            --color-background: #020617;
+            --color-foreground: #F8FAFC;
+            --color-muted: #1A1E2F;
+            --color-border: #334155;
+            --color-destructive: #EF4444;
+            --color-warning: #F59E0B;
+            --color-info: #3B82F6;
+            --font-heading: 'Fira Code', monospace;
+            --font-body: 'Fira Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--color-background);
+            color: var(--color-foreground);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        header {
+            background: var(--color-primary);
+            border-bottom: 1px solid var(--color-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--color-accent), #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+            margin-bottom: 0.25rem;
+        }
+        .subtitle {
+            font-size: 0.875rem;
+            color: #94A3B8;
+            font-weight: 300;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .status-card {
+            background: var(--color-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+        }
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .status-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94A3B8;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family: var(--font-heading);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .indicator.online { background: var(--color-accent); box-shadow: 0 0 8px var(--color-accent); }
+        .indicator.offline { background: var(--color-destructive); box-shadow: 0 0 8px var(--color-destructive); animation: none; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        .alert-banner {
+            background: linear-gradient(135deg, var(--color-destructive), #DC2626);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            display: none;
+            animation: alertPulse 2s infinite;
+            border: 1px solid #FCA5A5;
+        }
+        .alert-banner.active { display: block; }
+        @keyframes alertPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { opacity: 0.9; box-shadow: 0 0 20px 4px rgba(239, 68, 68, 0.2); }
+        }
+        .alert-banner h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 1024px) {
+            .content-grid { grid-template-columns: 2fr 1fr; }
+        }
+        .panel {
+            background: var(--color-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .panel-header h3 {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 600;
+            flex: 1;
+        }
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+        }
+        .suspicion-gauge {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            margin: 1rem 0;
+        }
+        .gauge-arc {
+            width: 100%;
+            height: 100%;
+        }
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -20%);
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+        }
+        .gauge-label {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.875rem;
+            color: #94A3B8;
+        }
+        .log {
+            background: var(--color-muted);
+            border-radius: 6px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: var(--font-heading);
+            font-size: 0.8125rem;
+            line-height: 1.8;
+        }
+        .log-entry {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        .log-entry:last-child { border-bottom: none; }
+        .log-time {
+            color: #64748B;
+            margin-right: 0.5rem;
+        }
+        .location-item {
+            background: var(--color-muted);
+            border-left: 3px solid var(--color-accent);
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            font-family: var(--font-heading);
+            font-size: 0.875rem;
+            transition: background 150ms ease-out;
+            cursor: pointer;
+        }
+        .location-item:hover {
+            background: #252B3F;
+        }
+        .location-coords {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .location-meta {
+            font-size: 0.75rem;
+            color: #94A3B8;
+        }
+        .location-place {
+            font-size: 0.8125rem;
+            color: var(--color-accent);
+            margin-bottom: 0.125rem;
+        }
+        /* Фильтр истории перемещений: обычная GET-форма, без JS —
+           состояние живёт в адресной строке, ссылку можно сохранить. */
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            align-items: end;
+            margin-bottom: 1rem;
+        }
+        .filter-field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .filter-field label {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .filter-field select,
+        .filter-field input {
+            background: var(--color-muted);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            color: var(--color-text);
+            font-family: var(--font-heading);
+            font-size: 0.875rem;
+            padding: 0.5rem 0.6rem;
+            width: 100%;
+        }
+        .filter-field select:focus,
+        .filter-field input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+        .filter-actions { display: flex; gap: 0.5rem; }
+        .btn {
+            background: var(--color-accent);
+            border: 1px solid var(--color-accent);
+            border-radius: 6px;
+            color: #06210F;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.5rem 0.9rem;
+            transition: opacity 150ms ease-out;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--color-border);
+            color: #94A3B8;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .track-summary {
+            font-size: 0.8125rem;
+            color: #94A3B8;
+            margin-bottom: 0.75rem;
+        }
+        .track-list { max-height: 320px; overflow-y: auto; }
+        .track-empty {
+            color: #64748B;
+            font-size: 0.875rem;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .scrollbar-custom {
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-border) var(--color-muted);
+        }
+        .scrollbar-custom::-webkit-scrollbar { width: 8px; }
+        .scrollbar-custom::-webkit-scrollbar-track { background: var(--color-muted); }
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 4px;
+        }
+        .scrollbar-custom::-webkit-scrollbar-thumb:hover { background: #475569; }
+        @media (max-width: 768px) {
+            .status-grid { grid-template-columns: 1fr 1fr; }
+            #map { height: 300px; }
+            .suspicion-gauge { height: 150px; }
+            .gauge-value { font-size: 2rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🛡️ O.R.I.O.N.</h1>
+            <p class="subtitle">Operational Response & Intelligence Observation Network</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="alertBanner" class="alert-banner">
+            <h2>🚨 ТРЕВОГА АКТИВНА</h2>
+            <p id="alertReason"></p>
+            <p id="alertLocation"></p>
+        </div>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-label">Система</div>
+                <div class="status-value">
+                    <span class="indicator online"></span>
+                    <span>Online</span>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Telegram Bot</div>
+                <div class="status-value" id="botStatus">
+                    <span class="indicator offline"></span>
+                    <span id="botStatusText">Offline</span>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Точек сохранено</div>
+                <div class="status-value" id="pointsCount">{{ points_count }}</div>
+            </div>
+            <div class="status-card">
+                <div class="status-label">Последнее обновление</div>
+                <div class="status-value" id="lastUpdate" style="font-size: 1rem;">
+                    {% if last_location %}
+                        {{ last_location.timestamp[:19] }}
+                    {% else %}
+                        Нет данных
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>📍 Карта местоположений</h3>
+                </div>
+                <div id="map"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>🧠 Счётчик подозрений</h3>
+                </div>
+                <div class="suspicion-gauge">
+                    <canvas id="gaugeCanvas" class="gauge-arc"></canvas>
+                    <div class="gauge-value" id="gaugeValue">0</div>
+                    <div class="gauge-label">Уровень подозрения</div>
+                </div>
+                <div id="suspicionReason" style="font-size: 0.875rem; color: #94A3B8; text-align: center;">
+                    Ожидание данных...
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>🧭 История перемещений</h3>
+            </div>
+
+            <form class="filter-form" method="get" action="/">
+                <div class="filter-field">
+                    <label for="fDay">Дата</label>
+                    <select id="fDay" name="day">
+                        <option value="">Все дни</option>
+                        {% for d in track_days %}
+                        <option value="{{ d.date }}" {% if d.date == filter_day %}selected{% endif %}>
+                            {{ d.date }} — {{ d.points }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-field">
+                    <label for="fFrom">С</label>
+                    <input id="fFrom" type="time" name="from_time" value="{{ filter_from }}">
+                </div>
+                <div class="filter-field">
+                    <label for="fTo">По</label>
+                    <input id="fTo" type="time" name="to_time" value="{{ filter_to }}">
+                </div>
+                <div class="filter-field">
+                    <label for="fPlace">Место</label>
+                    <input id="fPlace" type="text" name="place" value="{{ filter_place }}"
+                           list="placeList" placeholder="часть названия" autocomplete="off">
+                    <datalist id="placeList">
+                        {% for p in track_places %}<option value="{{ p }}"></option>{% endfor %}
+                    </datalist>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn" type="submit">Показать</button>
+                    <a class="btn btn-ghost" href="/">Сбросить</a>
+                </div>
+            </form>
+
+            <div class="track-summary">
+                {% if track %}
+                    Точек: <strong>{{ track|length }}</strong>
+                    {% if filter_day or filter_place %}
+                        — по фильтру
+                    {% else %}
+                        — последние
+                    {% endif %}
+                    · с {{ track[0].timestamp[11:16] }} {{ track[0].timestamp[:10] }}
+                    по {{ track[-1].timestamp[11:16] }} {{ track[-1].timestamp[:10] }}
+                {% else %}
+                    Точек нет
+                {% endif %}
+            </div>
+
+            <div class="track-list scrollbar-custom">
+                {% for p in track|reverse %}
+                <div class="location-item" data-lat="{{ p.latitude }}" data-lon="{{ p.longitude }}">
+                    {% if p.place %}<div class="location-place">{{ p.place }}</div>{% endif %}
+                    <div class="location-coords">{{ p.timestamp[11:16] }} · {{ p.timestamp[:10] }}</div>
+                    <div class="location-meta">
+                        {{ "%.5f"|format(p.latitude) }}, {{ "%.5f"|format(p.longitude) }}
+                        {% if p.device_id %} · {{ p.device_id }}{% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="track-empty">
+                    {% if filter_day or filter_place %}
+                        За этот период и место точек не записано.
+                    {% else %}
+                        Трек пуст — приложение ещё не присылало координаты.
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>📡 Лог событий</h3>
+            </div>
+            <div id="eventLog" class="log scrollbar-custom">
+                <div class="log-entry">
+                    <span class="log-time">[{{ "now"|default("") }}]</span>
+                    Система запущена
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Leaflet map initialization
+        const map = L.map('map').setView([55.7558, 37.6173], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenM</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        const markers = {};
+        let lastMarker = null;
+        const polylinePoints = [];
+        let polyline = null;
+
+        function addLocationToMap(data) {
+            const latLng = [data.latitude, data.longitude];
+            polylinePoints.push(latLng);
+
+            if (polyline) {
+                map.removeLayer(polyline);
+            }
+            polyline = L.polyline(polylinePoints, {
+                color: '#22C55E',
+                weight: 3,
+                opacity: 0.7
+            }).addTo(map);
+
+            if (lastMarker) {
+                lastMarker.setIcon(L.icon({
+                    iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI4IiBmaWxsPSIjMjJDNTVFIiBvcGFjaXR5PSIwLjMiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI0IiBmaWxsPSIjMjJDNTVFIi8+PC9zdmc+',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                }));
+            }
+
+            lastMarker = L.marker(latLng, {
+                icon: L.icon({
+                    iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxMiIgZmlsbD0iIzIyQzU1RSIgb3BhY2l0eT0iMC40Ii8+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iOCIgZmlsbD0iIzIyQzU1RSIvPjxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjQiIGZpbGw9IiNGOEZBRkMiLz48L3N2Zz4=',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                })
+            }).addTo(map).bindPopup(
+                `<strong>Последняя позиция</strong><br>` +
+                `${data.latitude.toFixed(5)}, ${data.longitude.toFixed(5)}<br>` +
+                `<small>${data.timestamp}</small>`
+            );
+
+            map.setView(latLng, map.getZoom(), { animate: true });
+        }
+
+        {% if last_location %}
+        addLocationToMap({{ last_location|tojson }});
+        {% endif %}
+
+        // ── История перемещений ─────────────────────────────────────
+        // Отдельный слой поверх «живой» зелёной линии: там точки текущей
+        // сессии из SSE, здесь — отфильтрованный трек с диска. Смешивать их
+        // в одной polyline нельзя, иначе новая точка пририсовывалась бы к
+        // концу истории и линия скакала бы через весь город.
+        const historyTrack = {{ track|tojson }};
+        const trackMarkers = {};
+
+        if (historyTrack.length) {
+            const latLngs = historyTrack.map(p => [p.latitude, p.longitude]);
+            L.polyline(latLngs, { color: '#38BDF8', weight: 3, opacity: 0.6 }).addTo(map);
+
+            historyTrack.forEach((p, i) => {
+                const marker = L.circleMarker(latLngs[i], {
+                    radius: 5, color: '#38BDF8', weight: 2,
+                    fillColor: '#0F172A', fillOpacity: 0.9
+                }).addTo(map).bindPopup(
+                    `<strong>${p.place || 'Без названия'}</strong><br>` +
+                    `${p.timestamp.slice(11, 16)} · ${p.timestamp.slice(0, 10)}<br>` +
+                    `<small>${p.latitude.toFixed(5)}, ${p.longitude.toFixed(5)}</small>`
+                );
+                trackMarkers[`${p.latitude},${p.longitude}`] = marker;
+            });
+
+            if (latLngs.length > 1) {
+                map.fitBounds(L.latLngBounds(latLngs), { padding: [30, 30] });
+            } else {
+                map.setView(latLngs[0], 15);
+            }
+        }
+
+        // Клик по строке списка — показать эту точку на карте.
+        document.querySelectorAll('.track-list .location-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const lat = parseFloat(el.dataset.lat);
+                const lon = parseFloat(el.dataset.lon);
+                if (Number.isNaN(lat) || Number.isNaN(lon)) return;
+                map.setView([lat, lon], Math.max(map.getZoom(), 16), { animate: true });
+                const marker = trackMarkers[`${lat},${lon}`];
+                if (marker) marker.openPopup();
+                document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        // Suspicion gauge
+        const canvas = document.getElementById('gaugeCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = canvas.offsetHeight * 2;
+        ctx.scale(2, 2);
+
+        function drawGauge(level) {
+            const w = canvas.width / 2, h = canvas.height / 2;
+            const cx = w / 2, cy = h * 0.7, r = Math.min(w, h) * 0.6;
+            ctx.clearRect(0, 0, w, h);
+
+            // Background arc
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, Math.PI, 2 * Math.PI, false);
+            ctx.lineWidth = 20;
+            ctx.strokeStyle = '#1E293B';
+            ctx.stroke();
+
+            // Level arc
+            const endAngle = Math.PI + (level / 100) * Math.PI;
+            const gradient = ctx.createLinearGradient(cx - r, cy, cx + r, cy);
+            if (level < 40) {
+                gradient.addColorStop(0, '#22C55E');
+                gradient.addColorStop(1, '#10B981');
+            } else if (level < 70) {
+                gradient.addColorStop(0, '#F59E0B');
+                gradient.addColorStop(1, '#FBBF24');
+            } else {
+                gradient.addColorStop(0, '#EF4444');
+                gradient.addColorStop(1, '#DC2626');
+            }
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, Math.PI, endAngle, false);
+            ctx.strokeStyle = gradient;
+            ctx.stroke();
+        }
+
+        function updateSuspicion(level, reason) {
+            document.getElementById('gaugeValue').textContent = level;
+            document.getElementById('suspicionReason').textContent = reason || 'Нет данных';
+            drawGauge(level);
+        }
+
+        drawGauge(0);
+
+        // Event log
+        const eventLog = document.getElementById('eventLog');
+        function log(msg, highlight = false) {
+            const time = new Date().toLocaleTimeString('ru-RU');
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            if (highlight) div.style.color = '#22C55E';
+            div.innerHTML = `<span class="log-time">[${time}]</span>${msg}`;
+            eventLog.insertBefore(div, eventLog.firstChild);
+            if (eventLog.children.length > 50) {
+                eventLog.removeChild(eventLog.lastChild);
+            }
+        }
+
+        // SSE stream
+        const eventSource = new EventSource('/events/stream');
+        const alertBanner = document.getElementById('alertBanner');
+
+        eventSource.onopen = () => log('✅ Подключено к серверу', true);
+        eventSource.onerror = () => log('❌ Ошибка подключения, переподключение...');
+
+        eventSource.onmessage = (e) => {
+            if (e.data.startsWith(':')) return;
+            try {
+                const event = JSON.parse(e.data);
+                handleEvent(event);
+            } catch (err) {
+                console.error('Parse error:', err);
+            }
+        };
+
+        function handleEvent(event) {
+            const { type, data } = event;
+
+            switch (type) {
+                case 'init':
+                    log(`📊 Инициализация: ${data.points} точек`);
+                    updateBotStatus(data.bot);
+                    if (data.alert) showAlert(data.alert);
+                    break;
+
+                case 'location':
+                    log(`📍 Новая локация: ${data.latitude.toFixed(5)}, ${data.longitude.toFixed(5)}`);
+                    addLocationToMap(data);
+                    document.getElementById('pointsCount').textContent =
+                        parseInt(document.getElementById('pointsCount').textContent) + 1;
+                    break;
+
+                case 'alert':
+                    log(`🚨 ТРЕВОГА: ${data.reason}`);
+                    showAlert(data);
+                    break;
+
+                case 'alert_cleared':
+                    log('✅ Тревога снята', true);
+                    alertBanner.classList.remove('active');
+                    break;
+
+                case 'sos':
+                    log(`🆘 SOS от ${data.source}`);
+                    break;
+
+                case 'bot_connected':
+                    log(`🤖 Бот подключен (переподключение #${data.reconnects})`);
+                    updateBotStatus({ online: true, status: 'online' });
+                    break;
+
+                case 'bot_status':
+                    updateBotStatus({ online: true, status: data.status });
+                    break;
+
+                case 'suspicion_level':
+                    updateSuspicion(data.level, data.reason);
+                    if (data.rising) {
+                        log(`🧠 Подозрение растёт: ${data.level}/100`);
+                    }
+                    break;
+
+                default:
+                    log(`📬 Событие: ${type}`);
+            }
+        }
+
+        function updateBotStatus(bot) {
+            const statusEl = document.getElementById('botStatus');
+            const textEl = document.getElementById('botStatusText');
+            const indicator = statusEl.querySelector('.indicator');
+
+            if (bot.online && !bot.stale) {
+                indicator.className = 'indicator online';
+                textEl.textContent = 'Online';
+            } else {
+                indicator.className = 'indicator offline';
+                textEl.textContent = 'Offline';
+            }
+        }
+
+        function showAlert(alert) {
+            alertBanner.classList.add('active');
+            document.getElementById('alertReason').textContent = alert.reason;
+            document.getElementById('alertLocation').textContent =
+                `📍 ${alert.latitude.toFixed(5)}, ${alert.longitude.toFixed(5)}`;
+        }
+
+        log('🚀 Dashboard загружен', true);
+    </script>
+</body>
+</html>

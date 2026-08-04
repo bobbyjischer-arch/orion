@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key>
+	<string>ORION</string>
+	<key>CFBundleName</key>
+	<string>ORION</string>
+	<key>CFBundleDisplayName</key>
+	<string>ORION</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.stark.orion</string>
+	<key>CFBundleVersion</key>
+	<string>2</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchScreen</key>
+	<dict/>
+
+	<!-- Геолокация -->
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>O.R.I.O.N. отслеживает местоположение в фоне для обеспечения безопасности.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>O.R.I.O.N. нужна геолокация всегда для мониторинга безопасности.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>O.R.I.O.N. использует геолокацию для отправки координат на сервер.</string>
+
+	<!-- Шагомер / движение -->
+	<key>NSMotionUsageDescription</key>
+	<string>O.R.I.O.N. использует шагомер для отслеживания активности и анализа состояния.</string>
+
+	<!-- Биометрия (Face ID) — обязательна, иначе краш при автозапросе на экране блокировки -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>O.R.I.O.N. использует Face ID для разблокировки приложения.</string>
+
+	<!-- Уведомления и фон -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+
+	<!-- App Group для виджета -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.stark.orion</string>
+	</array>
+
+	<!-- Разрешить HTTP для локального сервера -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+			<key>192.168.1.1</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
+</dict>
+</plist>

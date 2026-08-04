@@ -1,0 +1,30 @@
+# Render Blueprint: один web-сервис (core + бот в одном процессе, см. server/start.sh).
+# Free-тариф: сервис засыпает после ~15 мин простоя — детали в server/DEPLOY.md.
+services:
+  - type: web
+    name: orion-core
+    runtime: python
+    rootDir: server
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    healthCheckPath: /api/status
+    envVars:
+      # На 3.14 у Render может не быть колёс; код совместим с 3.12.
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      # На Render нет Ollama — не тратим время на пробы localhost.
+      - key: LLM_BACKEND
+        value: openrouter
+      - key: ORION_API_KEY
+        generateValue: true
+      - key: ORION_CASCADE_SECRET
+        generateValue: true
+      - key: SECRET_CODE
+        sync: false
+      - key: TELEGRAM_TOKEN
+        sync: false
+      - key: OWNER_CHAT_ID
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false

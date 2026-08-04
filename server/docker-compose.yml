@@ -1,0 +1,53 @@
+# O.R.I.O.N. — локальный/серверный запуск (core + bot [+ cloudflared]).
+#
+#   docker compose up -d            # core + bot
+#   docker compose --profile tunnel up -d   # + Cloudflare Tunnel
+#
+# Секреты берутся из .env (он git-ignored). Заполни его перед запуском.
+
+services:
+  core:
+    build: .
+    ports:
+      - "8080:8000"                 # хост:контейнер — дашборд на http://localhost:8080
+    environment:
+      - SECRET_CODE=${SECRET_CODE:-change-me}
+      - ORION_API_KEY=${ORION_API_KEY:-}
+      - ORION_CASCADE_SECRET=${ORION_CASCADE_SECRET:-}
+      - ORION_CORS_ORIGINS=${ORION_CORS_ORIGINS:-}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
+      - LLM_BACKEND=${LLM_BACKEND:-auto}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-deepseek/deepseek-chat-v3-0324:free}
+      - OLLAMA_URL=${OLLAMA_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma2:2b}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    networks: [orion-network]
+
+  bot:
+    build: .
+    command: python bot.py
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-}
+      - CORE_URL=http://core:8000
+      - OWNER_CHAT_ID=${OWNER_CHAT_ID:-}
+    depends_on: [core]
+    restart: unless-stopped
+    networks: [orion-network]
+
+  # Cloudflare Tunnel — публикует core наружу без открытия портов/белого IP.
+  # Обход блокировок: Cloudflare edge терминирует TLS, трафик к origin идёт
+  # по исходящему соединению туннеля. Требует TUNNEL_TOKEN из дашборда CF.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    profiles: [tunnel]
+    depends_on: [core]
+    restart: unless-stopped
+    networks: [orion-network]
+
+networks:
+  orion-network:
+    driver: bridge

@@ -1,0 +1,32 @@
+# O.R.I.O.N. — конфиг Cloudflare Tunnel (вариант с файлом креденшелов).
+#
+# Два способа запустить туннель:
+#   A) Токеном (проще, для docker-compose): создай туннель в дашборде
+#      Cloudflare Zero Trust → Networks → Tunnels, скопируй токен в
+#      TUNNEL_TOKEN (.env) и запусти `docker compose --profile tunnel up -d`.
+#      Этот файл при этом НЕ нужен.
+#   B) Этим конфигом (cloudflared на хосте):
+#        cloudflared tunnel login
+#        cloudflared tunnel create orion
+#        # пропиши tunnel id и путь к *.json ниже
+#        cloudflared tunnel route dns orion orion.example.com
+#        cloudflared tunnel --config deploy/cloudflared-config.yml run
+#
+# SSE и long-polling бота — долгоживущие соединения; туннель их держит,
+# в отличие от Cloudflare Pages/Workers, поэтому backend остаётся как есть.
+
+tunnel: <TUNNEL_ID>
+credentials-file: /root/.cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  # Дашборд + API + SSE. Origin — контейнер/процесс core на 8080 (или 8000).
+  - hostname: orion.example.com
+    service: http://localhost:8080
+    originRequest:
+      # SSE: не буферизовать, длинные таймауты
+      disableChunkedEncoding: true
+      connectTimeout: 30s
+      # держим соединение для /events/stream
+      noTLSVerify: false
+  # Всё прочее — 404
+  - service: http_status:404

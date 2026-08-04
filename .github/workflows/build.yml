@@ -1,0 +1,88 @@
+name: Build O.R.I.O.N. IPA
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: ios          # iOS-проект живёт в ios/
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Select Xcode 16
+      run: sudo xcode-select -s /Applications/Xcode_16.4.app
+
+    - name: Build ORION
+      run: |
+        xcodebuild \
+          -project ORION.xcodeproj \
+          -scheme ORION \
+          -configuration Release \
+          -sdk iphoneos \
+          -arch arm64 \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO \
+          ONLY_ACTIVE_ARCH=NO \
+          build \
+          -derivedDataPath build/
+
+    - name: Verify build output
+      run: |
+        ls build/Build/Products/Release-iphoneos/
+        echo "Executable check:"
+        ls build/Build/Products/Release-iphoneos/ORION.app/
+
+    - name: Package IPA (Payload/ORION.app)
+      run: |
+        # Правильная структура IPA: Payload/ORION.app/...
+        mkdir -p ipa_work/Payload
+        cp -r build/Build/Products/Release-iphoneos/ORION.app ipa_work/Payload/ORION.app
+        echo "App contents:"; ls ipa_work/Payload/ORION.app/
+        cd ipa_work
+        zip -r ../ORION.ipa Payload
+        cd ..
+        echo "IPA size: $(du -sh ORION.ipa)"
+        echo "IPA contents (top):"; unzip -l ORION.ipa | head -20
+
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: ORION-IPA
+        path: ios/ORION.ipa
+        retention-days: 30
+
+  server-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install deps
+      run: pip install -r requirements.txt
+
+    - name: Tests
+      env:
+        PYTHONIOENCODING: utf-8
+      run: |
+        python tests/test_store.py
+        python tests/test_aegis.py
+        python tests/test_aegis_memory.py
+        python tests/test_crypto.py

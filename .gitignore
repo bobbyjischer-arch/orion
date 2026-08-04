@@ -1,0 +1,61 @@
+# ─── Secrets (NEVER commit) ───────────────────────────────
+.env
+*.env
+!.env.example
+contacts.json
+*.key
+*.pem
+secrets.*
+
+# ─── Персональные данные (история перемещений, память «мозга») ───
+server/data/
+orion_store.json
+
+# ─── Python ───────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# ─── Native crypto core build artifacts ───────────────────
+core/native/build/
+*.so
+*.dll
+*.dylib
+*.o
+*.obj
+
+# ─── Node / web build ─────────────────────────────────────
+node_modules/
+dist/
+.wrangler/
+
+# ─── iOS / Xcode ──────────────────────────────────────────
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+
+# ─── OS / editor ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# ─── O.R.I.O.N. runtime state ─────────────────────────────
+data/
+*.log
+suspicion_state.json
+finance_ledger.json
+
+# Redundant project archive / editor config
+orion.zip
+*.zip
+.claude/

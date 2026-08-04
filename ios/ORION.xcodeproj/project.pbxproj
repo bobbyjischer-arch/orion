@@ -1,0 +1,406 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B1000001 /* ORIONApp.swift */            = {isa = PBXBuildFile; fileRef = B2000001; };
+		B1000002 /* ContentView.swift */         = {isa = PBXBuildFile; fileRef = B2000002; };
+		B1000003 /* StatusView.swift */          = {isa = PBXBuildFile; fileRef = B2000003; };
+		B1000004 /* MapHistoryView.swift */      = {isa = PBXBuildFile; fileRef = B2000004; };
+		B1000005 /* SOSView.swift */             = {isa = PBXBuildFile; fileRef = B2000005; };
+		B1000006 /* SettingsView.swift */        = {isa = PBXBuildFile; fileRef = B2000006; };
+		B1000007 /* ORIONCard.swift */           = {isa = PBXBuildFile; fileRef = B2000007; };
+		B1000008 /* LocationService.swift */     = {isa = PBXBuildFile; fileRef = B2000008; };
+		B1000009 /* NetworkService.swift */      = {isa = PBXBuildFile; fileRef = B2000009; };
+		B1000010 /* NotificationService.swift */ = {isa = PBXBuildFile; fileRef = B2000010; };
+		B1000011 /* SOSService.swift */          = {isa = PBXBuildFile; fileRef = B2000011; };
+		B1000012 /* LocationPoint.swift */       = {isa = PBXBuildFile; fileRef = B2000012; };
+		B1000013 /* AppSettings.swift */         = {isa = PBXBuildFile; fileRef = B2000013; };
+		B1000014 /* Assets.xcassets */           = {isa = PBXBuildFile; fileRef = B2000014; };
+		B1000015 /* LockView.swift */            = {isa = PBXBuildFile; fileRef = B2000030; };
+		B1000016 /* DecoyVaultView.swift */      = {isa = PBXBuildFile; fileRef = B2000031; };
+		B1000017 /* AppLock.swift */             = {isa = PBXBuildFile; fileRef = B2000032; };
+		B1000040 /* KeychainService.swift */     = {isa = PBXBuildFile; fileRef = B2000040; };
+		B1000041 /* BiometricService.swift */    = {isa = PBXBuildFile; fileRef = B2000041; };
+		B1000042 /* JailbreakDetector.swift */   = {isa = PBXBuildFile; fileRef = B2000042; };
+		B1000043 /* OfflineQueueService.swift */ = {isa = PBXBuildFile; fileRef = B2000043; };
+		B1000044 /* SuspicionAssessment.swift */ = {isa = PBXBuildFile; fileRef = B2000044; };
+		B1000045 /* LLMService.swift */          = {isa = PBXBuildFile; fileRef = B2000045; };
+		B1000046 /* SuspicionService.swift */    = {isa = PBXBuildFile; fileRef = B2000046; };
+		B1000047 /* PointOfInterest.swift */     = {isa = PBXBuildFile; fileRef = B2000047; };
+		B1000048 /* PointsOfInterestService.swift */ = {isa = PBXBuildFile; fileRef = B2000048; };
+		B1000049 /* SpeechService.swift */       = {isa = PBXBuildFile; fileRef = B2000049; };
+		B1000050 /* POIView.swift */             = {isa = PBXBuildFile; fileRef = B2000050; };
+		B1000051 /* SafePathService.swift */     = {isa = PBXBuildFile; fileRef = B2000051; };
+		B1000052 /* HealthData.swift */          = {isa = PBXBuildFile; fileRef = B2000052; };
+		B1000053 /* HealthService.swift */       = {isa = PBXBuildFile; fileRef = B2000053; };
+		B1000054 /* HealthView.swift */          = {isa = PBXBuildFile; fileRef = B2000054; };
+		B1000055 /* CascadeCrypto.swift */       = {isa = PBXBuildFile; fileRef = B2000055; };
+		B1000056 /* Theme.swift */               = {isa = PBXBuildFile; fileRef = B2000056; };
+		B1000058 /* HistoryLock.swift */         = {isa = PBXBuildFile; fileRef = B2000058; };
+		B1000060 /* RecordsHistoryView.swift */  = {isa = PBXBuildFile; fileRef = B2000060; };
+		B1000062 /* OrionAppearance.swift */     = {isa = PBXBuildFile; fileRef = B2000062; };
+		B1000063 /* LiquidGlass.swift */         = {isa = PBXBuildFile; fileRef = B2000063; };
+		B1000064 /* AppearanceView.swift */      = {isa = PBXBuildFile; fileRef = B2000064; };
+		B1000065 /* OrionPet.swift */            = {isa = PBXBuildFile; fileRef = B2000065; };
+		B1000066 /* PetEngine.swift */           = {isa = PBXBuildFile; fileRef = B2000066; };
+		B1000067 /* PetLayer.swift */            = {isa = PBXBuildFile; fileRef = B2000067; };
+		B1000068 /* PetSprite.swift */           = {isa = PBXBuildFile; fileRef = B2000068; };
+		B1000020 /* ORIONWidget.swift (W) */     = {isa = PBXBuildFile; fileRef = B2000020; };
+		B1000024 /* Assets.xcassets (W) */       = {isa = PBXBuildFile; fileRef = B2000014; };
+		B1000070 /* ORIONWidget.appex (Embed) */ = {isa = PBXBuildFile; fileRef = B3000002; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B2000001 /* ORIONApp.swift */            = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ORIONApp.swift; sourceTree = "<group>"; };
+		B2000002 /* ContentView.swift */         = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B2000003 /* StatusView.swift */          = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/StatusView.swift; sourceTree = "<group>"; };
+		B2000004 /* MapHistoryView.swift */      = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/MapHistoryView.swift; sourceTree = "<group>"; };
+		B2000005 /* SOSView.swift */             = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/SOSView.swift; sourceTree = "<group>"; };
+		B2000006 /* SettingsView.swift */        = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
+		B2000007 /* ORIONCard.swift */           = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ORIONCard.swift; sourceTree = "<group>"; };
+		B2000008 /* LocationService.swift */     = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/LocationService.swift; sourceTree = "<group>"; };
+		B2000009 /* NetworkService.swift */      = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/NetworkService.swift; sourceTree = "<group>"; };
+		B2000010 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/NotificationService.swift; sourceTree = "<group>"; };
+		B2000011 /* SOSService.swift */          = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SOSService.swift; sourceTree = "<group>"; };
+		B2000012 /* LocationPoint.swift */       = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/LocationPoint.swift; sourceTree = "<group>"; };
+		B2000013 /* AppSettings.swift */         = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AppSettings.swift; sourceTree = "<group>"; };
+		B2000014 /* Assets.xcassets */           = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B2000015 /* Info.plist */                = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2000020 /* ORIONWidget.swift */         = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ORIONWidget.swift; sourceTree = "<group>"; };
+		B2000030 /* LockView.swift */            = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/LockView.swift; sourceTree = "<group>"; };
+		B2000031 /* DecoyVaultView.swift */      = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/DecoyVaultView.swift; sourceTree = "<group>"; };
+		B2000032 /* AppLock.swift */             = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AppLock.swift; sourceTree = "<group>"; };
+		B2000040 /* KeychainService.swift */     = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/KeychainService.swift; sourceTree = "<group>"; };
+		B2000041 /* BiometricService.swift */    = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/BiometricService.swift; sourceTree = "<group>"; };
+		B2000042 /* JailbreakDetector.swift */   = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/JailbreakDetector.swift; sourceTree = "<group>"; };
+		B2000043 /* OfflineQueueService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/OfflineQueueService.swift; sourceTree = "<group>"; };
+		B2000044 /* SuspicionAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/SuspicionAssessment.swift; sourceTree = "<group>"; };
+		B2000045 /* LLMService.swift */          = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/LLMService.swift; sourceTree = "<group>"; };
+		B2000046 /* SuspicionService.swift */    = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SuspicionService.swift; sourceTree = "<group>"; };
+		B2000047 /* PointOfInterest.swift */     = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/PointOfInterest.swift; sourceTree = "<group>"; };
+		B2000048 /* PointsOfInterestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PointsOfInterestService.swift; sourceTree = "<group>"; };
+		B2000049 /* SpeechService.swift */       = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SpeechService.swift; sourceTree = "<group>"; };
+		B2000050 /* POIView.swift */             = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/POIView.swift; sourceTree = "<group>"; };
+		B2000051 /* SafePathService.swift */     = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/SafePathService.swift; sourceTree = "<group>"; };
+		B2000052 /* HealthData.swift */          = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/HealthData.swift; sourceTree = "<group>"; };
+		B2000053 /* HealthService.swift */       = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/HealthService.swift; sourceTree = "<group>"; };
+		B2000054 /* HealthView.swift */          = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/HealthView.swift; sourceTree = "<group>"; };
+		B2000055 /* CascadeCrypto.swift */       = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/CascadeCrypto.swift; sourceTree = "<group>"; };
+		B2000056 /* Theme.swift */               = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem/Theme.swift; sourceTree = "<group>"; };
+		B2000058 /* HistoryLock.swift */         = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/HistoryLock.swift; sourceTree = "<group>"; };
+		B2000060 /* RecordsHistoryView.swift */  = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/RecordsHistoryView.swift; sourceTree = "<group>"; };
+		B2000062 /* OrionAppearance.swift */     = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/OrionAppearance.swift; sourceTree = "<group>"; };
+		B2000063 /* LiquidGlass.swift */         = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem/LiquidGlass.swift; sourceTree = "<group>"; };
+		B2000064 /* AppearanceView.swift */      = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AppearanceView.swift; sourceTree = "<group>"; };
+		B2000065 /* OrionPet.swift */            = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/OrionPet.swift; sourceTree = "<group>"; };
+		B2000066 /* PetEngine.swift */           = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PetEngine.swift; sourceTree = "<group>"; };
+		B2000067 /* PetLayer.swift */            = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/PetLayer.swift; sourceTree = "<group>"; };
+		B2000068 /* PetSprite.swift */           = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/PetSprite.swift; sourceTree = "<group>"; };
+		B3000001 /* ORION.app */                 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ORION.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3000002 /* ORIONWidget.appex */         = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ORIONWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		B4000000 = {
+			isa = PBXGroup;
+			children = (B4000001, B4000002, B4000003);
+			sourceTree = "<group>";
+		};
+		B4000001 /* ORION */ = {
+			isa = PBXGroup;
+			children = (
+				B2000001, B2000002,
+				B2000003, B2000004, B2000005, B2000006, B2000007, B2000050,
+				B2000030, B2000031, B2000060, B2000064, B2000067, B2000068,
+				B2000008, B2000009, B2000010, B2000011,
+				B2000040, B2000041, B2000042, B2000043,
+				B2000045, B2000046, B2000048, B2000049, B2000051,
+				B2000053, B2000054, B2000055, B2000056, B2000063, B2000066,
+				B2000012, B2000013, B2000032, B2000044, B2000047, B2000052,
+				B2000058, B2000062, B2000065,
+				B2000014, B2000015,
+			);
+			path = ORION;
+			sourceTree = "<group>";
+		};
+		B4000002 /* ORIONWidget */ = {
+			isa = PBXGroup;
+			children = (B2000020);
+			path = ORIONWidget;
+			sourceTree = "<group>";
+		};
+		B4000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (B3000001, B3000002);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B5000001 /* ORION */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7000002;
+			buildPhases = (B6000001, B6000002, B6000003);
+			buildRules = ();
+			dependencies = (B8000001);
+			name = ORION;
+			productName = ORION;
+			productReference = B3000001;
+			productType = "com.apple.product-type.application";
+		};
+		B5000002 /* ORIONWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7000004;
+			buildPhases = (B6000010, B6000011);
+			buildRules = ();
+			dependencies = ();
+			name = ORIONWidget;
+			productName = ORIONWidget;
+			productReference = B3000002;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B5000000 = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					B5000001 = {CreatedOnToolsVersion = 15.0;};
+					B5000002 = {CreatedOnToolsVersion = 15.0;};
+				};
+			};
+			buildConfigurationList = B7000001;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base);
+			mainGroup = B4000000;
+			productRefGroup = B4000003;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (B5000001, B5000002);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B6000001 /* Sources ORION */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1000001, B1000002, B1000003, B1000004, B1000005,
+				B1000006, B1000007, B1000008, B1000009, B1000010,
+				B1000011, B1000012, B1000013,
+				B1000015, B1000016, B1000017,
+				B1000040, B1000041, B1000042, B1000043, B1000044,
+				B1000045, B1000046, B1000047, B1000048, B1000049,
+				B1000050, B1000051, B1000052, B1000053, B1000054,
+				B1000055, B1000056, B1000058, B1000060,
+				B1000062, B1000063, B1000064,
+				B1000065, B1000066, B1000067, B1000068,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B6000010 /* Sources Widget */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (B1000020);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B6000002 /* Resources ORION */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (B1000014);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B6000011 /* Resources Widget */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (B1000024);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B6000003 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (B1000070);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B8000001 = {
+			isa = PBXTargetDependency;
+			target = B5000002;
+			targetProxy = B8000002;
+		};
+		B8000002 = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B5000000;
+			proxyType = 1;
+			remoteGlobalIDString = B5000002;
+			remoteInfo = ORIONWidget;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B7000010 /* Project Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B7000011 /* Project Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B7000020 /* ORION Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ORION/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stark.orion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B7000021 /* ORION Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ORION/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stark.orion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		B7000030 /* Widget Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ORIONWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stark.orion.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B7000031 /* Widget Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ORIONWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stark.orion.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B7000001 /* Project */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (B7000010, B7000011);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7000002 /* ORION */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (B7000020, B7000021);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7000004 /* Widget */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (B7000030, B7000031);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = B5000000;
+}
