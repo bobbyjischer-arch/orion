@@ -1,6 +1,6 @@
-# CLAUDE.md — O.R.I.O.N.
+# PROJECT.md — O.R.I.O.N.
 
-Working notes for Claude. Keep this accurate; update it as the project changes.
+Technical reference and architecture notes.
 
 ## What this is
 
