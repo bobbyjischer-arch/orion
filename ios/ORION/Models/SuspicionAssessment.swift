@@ -20,6 +20,9 @@ struct SuspicionAssessment: Codable, Equatable {
     var action: String = "monitor"
     /// Уверенность AEGIS в выводе 0..100.
     var confidence: Int = 0
+    /// Уверенность словами («высокая», «предварительная»…) — v3.
+    /// Опционально: старые сохранённые вердикты декодируются без него.
+    var confidenceWord: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case suspicion
@@ -30,11 +33,13 @@ struct SuspicionAssessment: Codable, Equatable {
         case voice
         case action
         case confidence
+        case confidenceWord = "confidence_word"
     }
 
     init(suspicion: Int, reason: String, shouldAsk: Bool, question: String,
          source: String = "llm", voice: String = "",
-         action: String = "monitor", confidence: Int = 0) {
+         action: String = "monitor", confidence: Int = 0,
+         confidenceWord: String? = nil) {
         self.suspicion = suspicion
         self.reason = reason
         self.shouldAsk = shouldAsk
@@ -43,6 +48,7 @@ struct SuspicionAssessment: Codable, Equatable {
         self.voice = voice
         self.action = action
         self.confidence = confidence
+        self.confidenceWord = confidenceWord
     }
 
     /// Декодирование терпимо к отсутствию полей: нейросеть шлёт только
@@ -57,6 +63,7 @@ struct SuspicionAssessment: Codable, Equatable {
         voice = try c.decodeIfPresent(String.self, forKey: .voice) ?? ""
         action = try c.decodeIfPresent(String.self, forKey: .action) ?? "monitor"
         confidence = try c.decodeIfPresent(Int.self, forKey: .confidence) ?? 0
+        confidenceWord = try c.decodeIfPresent(String.self, forKey: .confidenceWord)
     }
 
     /// Категория для UI (цвет/иконка).
@@ -183,6 +190,11 @@ struct SuspicionAssessment: Codable, Equatable {
             signals.append(Signal(code: "moving", label: "уверенно движется", weight: ss))
         }
 
+        // v3: слишком быстро для пешего — ночью в промзоне это отдельный сюжет.
+        if let mps = speedMps, mps >= 3.5, mps < 14 {
+            signals.append(Signal(code: "rushing", label: "движение бегом", weight: 8))
+        }
+
         // Память: сколько человек уже стоит на одном месте. Мгновенная
         // неподвижность (motionless) и сорок минут в одной точке — разные вещи.
         if let dwell = dwellMinutes {
@@ -208,11 +220,17 @@ struct SuspicionAssessment: Codable, Equatable {
         let codes = Set(signals.map { $0.code })
         // Порядок правил = порядок убывания тревожности: возвращаем первое
         // совпавшее, поэтому сочетания с памятью стоят выше одноимённых без неё.
+        if codes.isSuperset(of: ["night", "unknown_place", "long_dwell", "motionless"]) {
+            return (30, "ночь, незнакомое место, полная неподвижность уже долго")
+        }
         if codes.isSuperset(of: ["night", "unknown_place", "long_dwell"]) {
             return (24, "ночью надолго застрял в незнакомом месте")
         }
         if codes.isSuperset(of: ["night", "industrial", "motionless"]) {
             return (20, "ночь, нежилая зона и полная неподвижность вместе")
+        }
+        if codes.isSuperset(of: ["night", "industrial", "rushing"]) {
+            return (18, "ночью быстрым шагом через нежилую зону")
         }
         if codes.isSuperset(of: ["far_deviation", "long_dwell"]) {
             return (16, "давно не двигается вдали от привычных мест")
@@ -226,11 +244,17 @@ struct SuspicionAssessment: Codable, Equatable {
         if codes.isSuperset(of: ["night", "far_deviation"]) {
             return (12, "ночью далеко от привычных мест")
         }
+        if codes.isSuperset(of: ["dusk", "unknown_place", "motionless"]) {
+            return (11, "в поздний час замер в незнакомом месте")
+        }
         if codes.isSuperset(of: ["industrial", "motionless"]) {
             return (10, "долго стоит в нежилой зоне")
         }
         if codes.isSuperset(of: ["night", "motionless"]) {
             return (8, "ночью долго не двигается")
+        }
+        if codes.isSuperset(of: ["rushing", "far_deviation"]) {
+            return (8, "спешит вдали от привычных мест")
         }
         return (0, nil)
     }
@@ -243,20 +267,48 @@ struct SuspicionAssessment: Codable, Equatable {
         return clamp(conf, 0, 95)
     }
 
-    /// Реплика ассистента + рекомендованное действие (_voice).
+    /// Реплика ассистента + рекомендованное действие.
+    ///
+    /// v3 «Джарвис-режим»: обращение «сэр», по два-три варианта фраз на ярус
+    /// (ротация по минуте, чтобы не долбить одной формулировкой) и конкретные
+    /// протоколы действий вместо сухой констатации. Тон прежний: собранный,
+    /// без паники.
     private static func voiceLine(suspicion: Int, reason: String,
                                   compoundNote: String?) -> (voice: String, action: String) {
         let focus = compoundNote ?? reason
+        let seed = Int(Date().timeIntervalSince1970 / 60)
+        func pick(_ variants: [String]) -> String { variants[abs(seed) % variants.count] }
         if suspicion >= 80 {
-            return ("Обстановка тревожная: \(focus). Держу связь наготове и готовлю SOS — скажи одно слово, и я подниму тревогу.", "prepare_sos")
+            return (pick([
+                "Сэр, обстановка критическая: \(focus). Я снял все ограничения с канала SOS — одно слово, и тревога уйдёт вашему доверенному контакту.",
+                "Сэр, картина серьёзно тревожная: \(focus). Протокол эвакуации готов, я держу связь на приоритете."
+            ]), "prepare_sos")
         }
         if suspicion >= askThreshold {
-            return ("Мне не нравится картина: \(focus). Проверю, всё ли в порядке.", "ask")
+            return (pick([
+                "Сэр, мне не нравится картина: \(focus). Запускаю проверку связи — просто ответьте, и я сниму наблюдение.",
+                "Сэр, обратите внимание: \(focus). Проверю, всё ли в порядке, — дождусь вашего слова."
+            ]), "ask")
         }
         if suspicion >= 35 {
-            return ("Приглядываю: \(focus). Пока без повода для тревоги.", "monitor")
+            return (pick([
+                "Сэр, приглядываюсь: \(focus). Повода для тревоги пока нет, наблюдение продолжается.",
+                "Заметил особенность, сэр: \(focus). Пока держу ситуацию в поле зрения."
+            ]), "monitor")
         }
-        return ("Всё спокойно. Я на связи и слежу за обстановкой.", "monitor")
+        return (pick([
+            "Всё спокойно, сэр. Я на связи и слежу за обстановкой.",
+            "Обстановка штатная, сэр. Датчики молчат, я на посту.",
+            "Ничего подозрительного, сэр. Продолжаю наблюдение в фоновом режиме."
+        ]), "monitor")
+    }
+
+    /// Уверенность словами — для интерфейса и реплик.
+    private static func confidenceWord(_ c: Int) -> String {
+        if c >= 80 { return "высокая" }
+        if c >= 60 { return "уверенная" }
+        if c >= 45 { return "средняя" }
+        return "предварительная"
     }
 
     /// Оценка обстановки автономным мозгом AEGIS (assess_situation).
@@ -286,15 +338,17 @@ struct SuspicionAssessment: Codable, Equatable {
 
         let (voice, action) = voiceLine(suspicion: suspicion, reason: reason, compoundNote: compoundNote)
         let ask = suspicion >= askThreshold
+        let confidence = confidenceScore(signals, compound: compoundNote != nil)
         return SuspicionAssessment(
             suspicion: suspicion,
             reason: reason,
             shouldAsk: ask,
-            question: ask ? "Всё ли с тобой хорошо? Ответь, и я успокоюсь." : "",
-            source: "aegis",
+            question: ask ? "Сэр, всё ли в порядке? Одного слова достаточно." : "",
+            source: "aegis-v3",
             voice: voice,
             action: action,
-            confidence: confidenceScore(signals, compound: compoundNote != nil)
+            confidence: confidence,
+            confidenceWord: confidenceWord(confidence)
         )
     }
 
